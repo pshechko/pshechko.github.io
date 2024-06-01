@@ -145,6 +145,7 @@ div#gift-carousel {
   height: 115px;
   margin-right: 20px;
   background-size: contain;
+  background-repeat: no-repeat;
 }
 .gift-item .gift-inner {
   display: flex;
