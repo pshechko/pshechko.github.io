@@ -6,6 +6,7 @@ let vue = new Vue({
     activePage: 'quiz', // Початкова активна сторінка - вікторина
     test: true,
     specificId: false,
+    modals: {},
     pages: {
       quiz: {
         questions: [
@@ -62,7 +63,7 @@ let vue = new Vue({
         randomGiftIndex: 0,
         giftClasses: '',
         suggestRespin: false,
-        spinsLeft: 5,
+        spinsLeft: 6,
         // Додайте дані для сторінки результатів тут
       }
     },
@@ -209,7 +210,7 @@ let vue = new Vue({
 
           setTimeout(() => {
             this.pages.results.suggestRespin = true; // Show button after 10 seconds
-          }, 15000);
+          }, 16000);
 
         }, 100);
 
@@ -220,7 +221,7 @@ let vue = new Vue({
     },
 
     pickSecond(){
-      xdialog.confirm('Да-да, я вже біжу, шас тільки закінчу, тут в мене одна... Ой, ви тут?) Ну давайте вже, обирайте свій подарунок. Тільки нікому не кажіть, а то мене звільнять і замінять на ChatGTPT', () => {
+      vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Да-да, я вже біжу, шас тільки закінчу, тут в мене одна... Ой, ви тут?) Ну давайте вже, обирайте свій подарунок. Тільки нікому не кажіть, а то мене звільнять і замінять на ChatGTPT', () => {
       }, {
         title: 'Шо-шо, Ірочка?',
         buttons: {
@@ -233,7 +234,7 @@ let vue = new Vue({
     },
 
     pickFirst(){
-      xdialog.confirm('Ну навіть якби так можна було, то що ви би обрали? Давайте швидше, в мене скоро обід, сьогодні електрохарчування зі смаком окрошки', () => {
+      vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Ну навіть якби так можна було, то що ви би обрали? Давайте швидше, в мене скоро обід, сьогодні електрохарчування зі смаком окрошки', () => {
       }, {
         title: '*пасивно-агресивні звуки цокання*',
         buttons: {
@@ -248,7 +249,7 @@ let vue = new Vue({
     },
 
     preConfirmGift(giftId){
-      xdialog.confirm('Ви точно впевнені, що хочете '+this.pages.results.gifts.filter(g => g.id === giftId)[0].name+'? Переобрати не можна буде.', function() {
+      vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Ви точно впевнені, що хочете '+this.pages.results.gifts.filter(g => g.id === giftId)[0].name+'? Переобрати не можна буде.', function() {
       }, {
         title: 'ТОЧНО!?',
         buttons: {
@@ -259,12 +260,12 @@ let vue = new Vue({
           vue.pickGift(giftId);
         },
         oncancel: function(){
-          xdialog.confirm('Визначтеся нарешті', () => {
+          vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Визначтеся нарешті', () => {
           }, {
             title: 'Та боооже',
             buttons: {
-              book: '<button style="" onclick="(vue.confirmGift(1))()" class="xd-button xd-ok">Taktická Medicína 1. díl</button>',
-              coffee: '<button style="" onclick="(vue.confirmGift(3))()" class="xd-button xd-ok">Кавомашина Delonghi ECAM320.60.B</button>',
+              book: '<button style="" onclick="(vue.preConfirmGift(1))()" class="xd-button xd-ok">Taktická Medicína 1. díl</button>',
+              coffee: '<button style="" onclick="(vue.preConfirmGift(3))()" class="xd-button xd-ok">Кавомашина Delonghi ECAM320.60.B</button>',
               cancel: 'Тут немає того, чого мені хотілося би',
             },
             oncancel: function(){
@@ -277,7 +278,7 @@ let vue = new Vue({
     },
 
     confirmGift(giftId){
-      xdialog.confirm('Ви точно впевнені, що хочете '+this.pages.results.gifts.filter(g => g.id === giftId)[0].name+'? Переобрати не можна буде.', function() {
+      vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Ви точно впевнені, що хочете '+this.pages.results.gifts.filter(g => g.id === giftId)[0].name+'? Переобрати не можна буде.', function() {
       }, {
         title: 'ТОЧНО!?',
         buttons: {
@@ -288,7 +289,7 @@ let vue = new Vue({
           vue.pickGift(giftId);
         },
         oncancel: function(){
-          xdialog.confirm('Ірочка, я даганю, ага. Обирайте вже', () => {
+          vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Ірочка, я даганю, ага. Обирайте вже', () => {
           }, {
             title: 'Та боооже',
             buttons: {
@@ -304,8 +305,17 @@ let vue = new Vue({
     },
 
     pickGift(giftId) {
+      this.getLastModelIndex();
       this.reloadResults(giftId);
       console.log(giftId);
+    },
+
+    getLastModelIndex() {
+      let  i = -1;
+      for(i in vue.modals){
+        vue.modals[i].close();
+      }
+      return ++i;
     },
 
 
@@ -319,7 +329,7 @@ let vue = new Vue({
       if(--this.pages.results.spinsLeft <= 0) {
 
         function youLoveIt(){
-          xdialog.confirm('Ви неодмінно звикнете до свого подарунка', function() {
+          vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Ви неодмінно звикнете до свого подарунка', function() {
           }, {
             title: 'Ну так і всьо)',
             buttons: {
@@ -332,7 +342,7 @@ let vue = new Vue({
         let v = this;
 
         
-        xdialog.confirm('На жаль всі спроби вичерпано(', () => {
+        vue.modals[vue.getLastModelIndex()] = xdialog.confirm('На жаль всі спроби вичерпано(', () => {
           // do work here if ok/yes selected...
           console.info('Done!');
         }, {
@@ -344,7 +354,7 @@ let vue = new Vue({
            
           },
           oncancel: () => {
-            xdialog.confirm('Вам не подобається?', () => {
+            vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Вам не подобається?', () => {
             }, {
               
               title: 'Тобто?',
@@ -355,7 +365,7 @@ let vue = new Vue({
               },
               onok: () => {
 
-                xdialog.confirm('Раді, що вам подобається', () => {
+                vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Раді, що вам подобається', () => {
                 }, {
                   title: 'Ну так і всьо)',
                   buttons: {
@@ -366,7 +376,7 @@ let vue = new Vue({
               },
 
               oncancel: () => {
-                xdialog.confirm('Система без помилок проаналізувала ваші відповіді, та обрала найркаший подарунок', () => {
+                vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Система без помилок проаналізувала ваші відповіді, та обрала найркаший подарунок', () => {
                 }, {
                   title: 'Такого не може бути',
                   buttons: {
@@ -380,7 +390,7 @@ let vue = new Vue({
                   },
                   oncancel: () => {
                     
-                    xdialog.confirm('Думаєте, система помилилася?', () => {
+                    vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Думаєте, система помилилася?', () => {
                     }, {
                       title: 'Що може?',
                       buttons: {
@@ -389,7 +399,7 @@ let vue = new Vue({
                       },
                       onok: () => {
 
-                        xdialog.confirm('Система працює, як швейцарський годинник, вона не може помилятися', () => {
+                        vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Система працює, як швейцарський годинник, вона не може помилятися', () => {
                         }, {
                           title: 'Не може бути',
                           buttons: {
@@ -397,7 +407,7 @@ let vue = new Vue({
                            
                           },
                           onok: () => {
-                            xdialog.confirm('Ви хочете обрати самі подарунок?', () => {
+                            vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Ви хочете обрати самі подарунок?', () => {
                             }, {
                               title: 'Ну і що ви пропонуєте?',
                               buttons: {
@@ -411,7 +421,7 @@ let vue = new Vue({
                               },
                               oncancel: () => {
 
-                                xdialog.confirm('Це проти правил', () => {
+                                vue.modals[vue.getLastModelIndex()] = xdialog.confirm('Це проти правил', () => {
                                 }, {
                                   title: 'Ну не знаю',
                                   buttons: {
@@ -446,7 +456,7 @@ let vue = new Vue({
         return;
       }
 
-      this.pages.results.pageTitle = 'Переобираємо';
+      this.pages.results.pageTitle = 'Перепідбираємо';
       this.pages.results.giftClasses = 'stop-transition';
 
       setTimeout(() => {
