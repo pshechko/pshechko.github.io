@@ -39,6 +39,7 @@ let vue = new Vue({
           { question: 'Чи подобається тобі обговорювати прочитані книги з друзями?', options: ['Так', 'Ні'], type: 'choice' },
           { question: 'Що ти більше любиш:', options: ['Кава з книгою', 'Кава з друзями'], type: 'choice' },
           { question: 'Як ти зазвичай починаєш свій ранок?', options: ['З кави', 'З чаю', 'З сніданку', 'Інше'], type: 'choice' },
+          { question: 'Хто твій коханий котик?', type: 'open' },
         ],
         currentQuestion: 0,
         openAnswer: "",
@@ -89,13 +90,17 @@ let vue = new Vue({
         quizPage.currentQuestion++;
         if (quizPage.currentQuestion >= quizPage.questions.length) {
           this.loadPage('loader'); // Після відповіді на всі питання показати прелоадер
+          console.log('LOADRE');
           setTimeout(() => {
+            console.log('Звужуємо коло пошуку');
             this.pages.loader.pageTitle = 'Звужуємо коло пошуку'; 
           }, 3000);
           setTimeout(() => {
+            console.log('Знайдено 1 варіант');
             this.pages.loader.pageTitle = 'Знайдено 1 варіант';             
           }, 5000);
           setTimeout(() => {
+            console.log('Знайдено 2 варіант');
             this.pages.loader.pageTitle = 'Знайдено 2 варіанти';             
           }, 6500);
           setTimeout(() => {

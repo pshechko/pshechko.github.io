@@ -3,7 +3,7 @@ $primary-color: #ff69b4; // Рожевий колір
 $hover-color: #ff1493; // Темно-рожевий колір для hover
 $input-border-color: #ccc;
 $background-color: #f8f0fc; // Фоновий колір
-$font-family: 'Indie Flower', 'Comic Sans MS', cursive, sans-serif; 
+$font-family: 'Comfortaa', 'Comic Sans MS', cursive, sans-serif; // Дівчачий шрифт
 $font-color: #333;
 
 @keyframes gradient {
@@ -37,7 +37,7 @@ h1 {
 // App container styles
 #app {
   max-width: 600px;
-  margin: 100px auto 20px;
+  margin: 500px auto 20px;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -111,7 +111,7 @@ h1 {
     width: 120px; /* Ширина та висота */
     height: 120px;
     animation: spin 2s linear infinite; /* Анімація обертання */
-    margin: auto; /* Центрування */
+    margin: auto auto 20px; /* Центрування */
     margin-top: 50px; /* Відступ від верху */
   
     @keyframes spin {
